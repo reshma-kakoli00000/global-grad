@@ -93,6 +93,10 @@ h1 {
   color: var(--color-text-primary);
 }
 
+h1.text-white {
+  color: #ffffff !important;
+}
+
 h2 {
   font-family: 'Geist', sans-serif;
   font-size: 1.5rem;

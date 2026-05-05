@@ -59,7 +59,9 @@ export default function DashboardSidebar() {
         {/* Logo */}
         <div className="p-6 border-b border-gray-200">
           <Link href="/" className="flex items-center gap-4 group">
-            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+            <div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all" style={{
+              background: 'linear-gradient(to bottom right, var(--color-primary-mid), var(--color-primary))',
+            }}>
               <span className="text-white font-bold text-lg">🎓</span>
             </div>
             <div className="flex-1 min-w-0">

@@ -149,7 +149,7 @@ export default function About() {
               >
                 {/* Background Image */}
                 <img
-                  src="/images/about.jpg"
+                  src="/images/about2.png"
                   alt="About Hero"
                   style={{
                     width: '100%',

@@ -40,7 +40,13 @@ export default function SignUp() {
   {/* Back Button */}
   <Link
     href="/"
-    className="absolute top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:shadow-lg hover:shadow-green-500/40 transition-all duration-300 hover:-translate-y-0.5 font-medium"
+    className="absolute top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-all duration-300 hover:-translate-y-0.5 font-medium"
+    style={{
+      background: 'linear-gradient(to right, var(--color-primary-mid), var(--color-primary))',
+      boxShadow: 'var(--shadow-md)',
+    }}
+    onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(23, 135, 110, 0.4)'}
+    onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
   >
     <ArrowLeft size={18} />
     <span>Back</span>
@@ -56,10 +62,13 @@ export default function SignUp() {
       backgroundPosition: 'center',
     }}
   >
-    {/* Dark Overlay */}
+    {/* Gradient Overlay with FeaturesCA Colors */}
     <div
-      className="absolute inset-0 bg-gradient-to-br from-green-900/90 to-green-700/80"
-      style={{ animation: animated ? 'fadeIn 0.8s ease-out' : 'none' }}
+      className="absolute inset-0"
+      style={{
+        background: 'linear-gradient(135deg, rgba(13, 61, 50, 0.85) 0%, rgba(15, 45, 94, 0.85) 100%)',
+        animation: animated ? 'fadeIn 0.8s ease-out' : 'none',
+      }}
     />
 
     {/* Content */}
@@ -82,6 +91,7 @@ export default function SignUp() {
         className="text-5xl font-bold text-white mb-4 leading-tight drop-shadow-lg"
         style={{
           animation: animated ? 'slideInUp 0.8s ease-out 0.2s both' : 'none',
+          color: '#ffffff',
         }}
       >
         Your Global Journey Starts Here
@@ -100,6 +110,7 @@ export default function SignUp() {
         className="text-lg italic text-white/90 mb-8 max-w-md leading-relaxed drop-shadow-md"
         style={{
           animation: animated ? 'slideInUp 0.8s ease-out 0.4s both' : 'none',
+          color: '#ffffff',
         }}
       >
         "Join thousands of students navigating their academic future with confidence and clarity."
@@ -116,10 +127,10 @@ export default function SignUp() {
           <span className="text-xl font-bold text-white">GG</span>
         </div>
         <div>
-          <p className="font-semibold text-white drop-shadow-md">
+          <p className="font-semibold text-white drop-shadow-md" style={{ color: '#ffffff' }}>
             GlobalGrad Community
           </p>
-          <p className="text-sm text-white/80 drop-shadow-sm">
+          <p className="text-sm text-white/80 drop-shadow-sm" style={{ color: '#ffffff' }}>
             Trusted by students worldwide
           </p>
         </div>
@@ -315,10 +326,14 @@ export default function SignUp() {
           {/* Primary Button */}
           <button
             onClick={handleSubmit}
-            className="w-full py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-full shadow-lg hover:shadow-green-500/40 hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:-translate-y-0.5 mb-4"
+            className="w-full py-3 text-white font-bold rounded-full transition-all duration-300 transform hover:-translate-y-0.5 mb-4"
             style={{
+              background: 'linear-gradient(to right, var(--color-primary-mid), var(--color-primary))',
+              boxShadow: 'var(--shadow-md)',
               animation: animated ? 'slideInUp 0.8s ease-out 0.8s both' : 'none',
             }}
+            onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(23, 135, 110, 0.4)'}
+            onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
           >
             Create Account
           </button>
