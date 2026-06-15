@@ -6,7 +6,7 @@ const baseURL = "literally-many-lacewing.ngrok-free.app/"; //ngrok url for testi
 export class AuthService {
   static async login(email: string, password: string) {
     try {
-      const response = await axios.post(`${baseURL}api/login/`, {
+      const response = await axios.post(`${baseURL}auth/token/`, {
         email,
         password,
       });
