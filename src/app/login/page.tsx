@@ -1,23 +1,28 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Mail, Lock, Globe, Share2, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import {
+  Mail,
+  Lock,
+  Globe,
+  Share2,
+  ArrowLeft,
+  AlertCircle,
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/providers/authContext";
 
 export default function Login() {
   const router = useRouter();
-  const [animated, setAnimated] = useState(false);
+  const { login: authLogin, loading, error, clearError } = useAuth();
+  const [animated, setAnimated] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [focusedField, setFocusedField] = useState<string | null>(null);
-
-  useEffect(() => {
-    setAnimated(true);
-  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,13 +30,28 @@ export default function Login() {
       ...prev,
       [name]: value,
     }));
+    if (error) clearError();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Redirect to dashboard after login
-    router.push('/dashboard');
+
+    // Validation
+    if (!formData.email.trim()) {
+      return;
+    }
+    if (!formData.password) {
+      return;
+    }
+
+    try {
+      await authLogin(formData.email, formData.password);
+      // Redirect to dashboard after successful login
+      router.push("/dashboard");
+    } catch (err) {
+      // Error is handled and displayed by the context
+      console.error("Login error:", err);
+    }
   };
 
   return (
@@ -41,11 +61,16 @@ export default function Login() {
         href="/"
         className="absolute top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-all duration-300 hover:-translate-y-0.5 font-medium"
         style={{
-          background: 'linear-gradient(to right, var(--color-primary-mid), var(--color-primary))',
-          boxShadow: 'var(--shadow-md)',
+          background:
+            "linear-gradient(to right, var(--color-primary-mid), var(--color-primary))",
+          boxShadow: "var(--shadow-md)",
         }}
-        onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(23, 135, 110, 0.4)'}
-        onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.boxShadow = "0 0 20px rgba(23, 135, 110, 0.4)")
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.boxShadow = "var(--shadow-md)")
+        }
       >
         <ArrowLeft size={18} />
         <span>Back</span>
@@ -56,16 +81,17 @@ export default function Login() {
         style={{
           backgroundImage:
             'url("https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&q=80")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         {/* Gradient Overlay with FeaturesCA Colors */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(135deg, rgba(13, 61, 50, 0.85) 0%, rgba(15, 45, 94, 0.85) 100%)',
-            animation: animated ? 'fadeIn 0.8s ease-out' : 'none',
+            background:
+              "linear-gradient(135deg, rgba(13, 61, 50, 0.85) 0%, rgba(15, 45, 94, 0.85) 100%)",
+            animation: animated ? "fadeIn 0.8s ease-out" : "none",
           }}
         />
 
@@ -75,7 +101,9 @@ export default function Login() {
           <div
             className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full bg-green-500/20 border border-green-400/30"
             style={{
-              animation: animated ? 'slideInUp 0.8s ease-out 0.1s both' : 'none',
+              animation: animated
+                ? "slideInUp 0.8s ease-out 0.1s both"
+                : "none",
             }}
           >
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
@@ -88,8 +116,10 @@ export default function Login() {
           <h1
             className="text-5xl font-bold text-white mb-4 leading-tight"
             style={{
-              animation: animated ? 'slideInUp 0.8s ease-out 0.2s both' : 'none',
-              color: '#ffffff',
+              animation: animated
+                ? "slideInUp 0.8s ease-out 0.2s both"
+                : "none",
+              color: "#ffffff",
             }}
           >
             Welcome Back
@@ -99,7 +129,9 @@ export default function Login() {
           <div
             className="w-10 h-1 bg-green-400 rounded-full mb-6"
             style={{
-              animation: animated ? 'slideInUp 0.8s ease-out 0.3s both' : 'none',
+              animation: animated
+                ? "slideInUp 0.8s ease-out 0.3s both"
+                : "none",
             }}
           />
 
@@ -107,28 +139,38 @@ export default function Login() {
           <p
             className="text-lg italic text-white mb-8 max-w-md leading-relaxed"
             style={{
-              animation: animated ? 'slideInUp 0.8s ease-out 0.4s both' : 'none',
-              color: '#ffffff',
+              animation: animated
+                ? "slideInUp 0.8s ease-out 0.4s both"
+                : "none",
+              color: "#ffffff",
             }}
           >
-            "Continue your academic journey and access your personalized dashboard with all your applications and progress."
+            Continue your academic journey and access your personalized
+            dashboard with all your applications and progress.
           </p>
 
           {/* Author Block */}
           <div
             className="flex items-center gap-4"
             style={{
-              animation: animated ? 'slideInUp 0.8s ease-out 0.5s both' : 'none',
+              animation: animated
+                ? "slideInUp 0.8s ease-out 0.5s both"
+                : "none",
             }}
           >
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
               <span className="text-xl font-bold text-white">GG</span>
             </div>
             <div>
-              <p className="font-semibold text-white" style={{ color: '#ffffff' }}>
-                GlobalGrad Community</p>
-              <p className="text-sm text-white" style={{ color: '#ffffff' }}>
-                Welcome back, Scholar</p>
+              <p
+                className="font-semibold text-white"
+                style={{ color: "#ffffff" }}
+              >
+                GlobalGrad Community
+              </p>
+              <p className="text-sm text-white" style={{ color: "#ffffff" }}>
+                Welcome back, Scholar
+              </p>
             </div>
           </div>
         </div>
@@ -141,7 +183,7 @@ export default function Login() {
           <div
             className="mb-8"
             style={{
-              animation: animated ? 'fadeIn 0.8s ease-out 0.3s both' : 'none',
+              animation: animated ? "fadeIn 0.8s ease-out 0.3s both" : "none",
             }}
           >
             <h2 className="text-3xl font-semibold text-slate-900 mb-2">
@@ -152,11 +194,27 @@ export default function Login() {
             </p>
           </div>
 
+          {/* Error Message */}
+          {error && (
+            <div
+              className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3"
+              style={{
+                animation: animated ? "slideInUp 0.6s ease-out" : "none",
+              }}
+            >
+              <AlertCircle
+                size={20}
+                className="text-red-600 flex-shrink-0 mt-0.5"
+              />
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
+
           {/* Social Login Buttons */}
           <div
             className="grid grid-cols-2 gap-4 mb-6"
             style={{
-              animation: animated ? 'fadeIn 0.8s ease-out 0.4s both' : 'none',
+              animation: animated ? "fadeIn 0.8s ease-out 0.4s both" : "none",
             }}
           >
             <button className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium text-slate-700">
@@ -173,7 +231,7 @@ export default function Login() {
           <div
             className="flex items-center gap-4 mb-6"
             style={{
-              animation: animated ? 'fadeIn 0.8s ease-out 0.5s both' : 'none',
+              animation: animated ? "fadeIn 0.8s ease-out 0.5s both" : "none",
             }}
           >
             <div className="flex-1 h-px bg-gray-200" />
@@ -187,7 +245,7 @@ export default function Login() {
           <div
             className="space-y-4 mb-6"
             style={{
-              animation: animated ? 'fadeIn 0.8s ease-out 0.6s both' : 'none',
+              animation: animated ? "fadeIn 0.8s ease-out 0.6s both" : "none",
             }}
           >
             {/* Email */}
@@ -197,9 +255,9 @@ export default function Login() {
               </label>
               <div
                 className={`relative flex items-center transition-all duration-200 rounded-lg overflow-hidden ${
-                  focusedField === 'email'
-                    ? 'ring-2 ring-green-500'
-                    : 'ring-1 ring-gray-200'
+                  focusedField === "email"
+                    ? "ring-2 ring-green-500"
+                    : "ring-1 ring-gray-200"
                 }`}
               >
                 <Mail
@@ -213,7 +271,7 @@ export default function Login() {
                   placeholder="you@university.edu"
                   value={formData.email}
                   onChange={handleInputChange}
-                  onFocus={() => setFocusedField('email')}
+                  onFocus={() => setFocusedField("email")}
                   onBlur={() => setFocusedField(null)}
                   className="w-full pl-10 pr-4 py-3 bg-gray-50 text-slate-900 placeholder-gray-400 focus:outline-none focus:bg-white transition-colors"
                 />
@@ -232,9 +290,9 @@ export default function Login() {
               </div>
               <div
                 className={`relative flex items-center transition-all duration-200 rounded-lg overflow-hidden ${
-                  focusedField === 'password'
-                    ? 'ring-2 ring-green-500'
-                    : 'ring-1 ring-gray-200'
+                  focusedField === "password"
+                    ? "ring-2 ring-green-500"
+                    : "ring-1 ring-gray-200"
                 }`}
               >
                 <Lock
@@ -243,12 +301,12 @@ export default function Login() {
                   strokeWidth={1.5}
                 />
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  onFocus={() => setFocusedField('password')}
+                  onFocus={() => setFocusedField("password")}
                   onBlur={() => setFocusedField(null)}
                   className="w-full pl-10 pr-12 py-3 bg-gray-50 text-slate-900 placeholder-gray-400 focus:outline-none focus:bg-white transition-colors"
                 />
@@ -301,7 +359,7 @@ export default function Login() {
           <div
             className="flex items-center gap-2 mb-6"
             style={{
-              animation: animated ? 'fadeIn 0.8s ease-out 0.7s both' : 'none',
+              animation: animated ? "fadeIn 0.8s ease-out 0.7s both" : "none",
             }}
           >
             <input
@@ -309,7 +367,10 @@ export default function Login() {
               id="remember"
               className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-2 focus:ring-green-500 cursor-pointer"
             />
-            <label htmlFor="remember" className="text-sm text-slate-600 cursor-pointer">
+            <label
+              htmlFor="remember"
+              className="text-sm text-slate-600 cursor-pointer"
+            >
               Keep me signed in
             </label>
           </div>
@@ -317,27 +378,40 @@ export default function Login() {
           {/* Primary Button */}
           <button
             onClick={handleSubmit}
-            className="w-full py-3 text-white font-bold rounded-full transition-all duration-300 transform hover:-translate-y-0.5 mb-4"
+            disabled={loading}
+            className="w-full py-3 text-white font-bold rounded-full transition-all duration-300 transform hover:-translate-y-0.5 mb-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             style={{
-              background: 'linear-gradient(to right, var(--color-primary-mid), var(--color-primary))',
-              boxShadow: 'var(--shadow-md)',
-              animation: animated ? 'slideInUp 0.8s ease-out 0.8s both' : 'none',
+              background:
+                "linear-gradient(to right, var(--color-primary-mid), var(--color-primary))",
+              boxShadow: "var(--shadow-md)",
+              animation: animated
+                ? "slideInUp 0.8s ease-out 0.8s both"
+                : "none",
             }}
-            onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(23, 135, 110, 0.4)'}
-            onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
+            onMouseEnter={(e) =>
+              !loading &&
+              (e.currentTarget.style.boxShadow =
+                "0 0 20px rgba(23, 135, 110, 0.4)")
+            }
+            onMouseLeave={(e) =>
+              !loading && (e.currentTarget.style.boxShadow = "var(--shadow-md)")
+            }
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </button>
 
           {/* Bottom Text */}
           <p
             className="text-center text-slate-600 text-sm"
             style={{
-              animation: animated ? 'fadeIn 0.8s ease-out 0.9s both' : 'none',
+              animation: animated ? "fadeIn 0.8s ease-out 0.9s both" : "none",
             }}
           >
-            Don't have an account?{' '}
-            <Link href="/signup" className="text-green-600 hover:underline font-semibold">
+            Don't have an account?{" "}
+            <Link
+              href="/signup"
+              className="text-green-600 hover:underline font-semibold"
+            >
               Create one
             </Link>
           </p>
@@ -346,7 +420,7 @@ export default function Login() {
           <p
             className="text-center text-gray-400 text-xs mt-6 pt-6 border-t border-gray-200"
             style={{
-              animation: animated ? 'fadeIn 0.8s ease-out 1s both' : 'none',
+              animation: animated ? "fadeIn 0.8s ease-out 1s both" : "none",
             }}
           >
             © 2024 GlobalGrad Tracker. All rights reserved.
