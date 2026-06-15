@@ -5,11 +5,12 @@ const baseURL = "https://literally-many-lacewing.ngrok-free.app/"; //ngrok url f
 
 export class AuthService {
   static async login(email: string, password: string) {
+    const formData = new FormData();
+    formData.append("username", email);
+    formData.append("password", password);
+
     try {
-      const response = await axios.post(`${baseURL}auth/token/`, {
-        email,
-        password,
-      });
+      const response = await axios.post(`${baseURL}auth/token/`, formData);
       return response.data; // Assuming the backend returns user data and token
     } catch (error) {
       console.error("Login failed:", error);
