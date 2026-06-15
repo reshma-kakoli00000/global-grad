@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:8000/"; // Replace with your backend URL
+// const baseURL = "http://localhost:8000/"; // Replace with your backend URL
+const baseURL = "literally-many-lacewing.ngrok-free.app/"; //ngrok url for testing
 
 export class AuthService {
   static async login(email: string, password: string) {
