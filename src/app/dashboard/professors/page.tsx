@@ -21,7 +21,7 @@ export default function ProfessorsPage() {
       <div className="flex-1 flex flex-col overflow-hidden">
         
         {/* Existing Header */}
-        <DashboardHeader userName="Alex" />
+        <DashboardHeader />
 
         {/* Page Content */}
         <div className="flex-1 overflow-hidden">

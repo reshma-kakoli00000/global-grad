@@ -18,7 +18,7 @@ export default function DocumentsPage() {
       <div className="flex-1 flex flex-col overflow-hidden">
         
         {/* Existing Header */}
-        <DashboardHeader userName="Alex" />
+        <DashboardHeader />
 
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto">
