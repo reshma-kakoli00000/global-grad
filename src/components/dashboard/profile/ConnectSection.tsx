@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/authContext';
-import { Mail, Phone, Linkedin, Edit2 } from 'lucide-react';
+import { Mail, Phone, Linkedin } from 'lucide-react';
 
 interface ConnectSectionProps {
   isEditing: boolean;
@@ -11,10 +11,20 @@ interface ConnectSectionProps {
 export default function ConnectSection({ isEditing }: ConnectSectionProps) {
   const { user } = useAuth();
   const [contactInfo, setContactInfo] = useState({
-    email: user?.email || 'user@stanford.edu',
+    email: '',
     phone: '+1 (650) 555-0192',
     linkedin: 'linkedin.com/in/alex-t-cs',
   });
+
+  // Sync email from auth context
+  useEffect(() => {
+    if (user?.email) {
+      setContactInfo((prev) => ({
+        ...prev,
+        email: user.email,
+      }));
+    }
+  }, [user?.email]);
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">

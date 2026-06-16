@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/authContext';
 import { Edit2, Share2, Plus } from 'lucide-react';
 
@@ -13,9 +13,19 @@ export default function ProfileHeader({ isEditing, setIsEditing }: ProfileHeader
   const { user } = useAuth();
   const [profileData, setProfileData] = useState({
     photo: 'https://via.placeholder.com/120?text=Profile',
+    fullName: '',
     title: 'Aspiring Ph.D. Candidate in Computer Science',
-    bio: '',
   });
+
+  // Sync user data from auth context
+  useEffect(() => {
+    if (user?.fullName) {
+      setProfileData((prev) => ({
+        ...prev,
+        fullName: user.fullName,
+      }));
+    }
+  }, [user?.fullName]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -58,7 +68,7 @@ export default function ProfileHeader({ isEditing, setIsEditing }: ProfileHeader
             <div className="flex items-start justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">
-                  {user?.fullName || 'User Profile'}
+                  {profileData.fullName || 'User Profile'}
                 </h1>
                 {isEditing ? (
                   <input

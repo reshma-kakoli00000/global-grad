@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import { useRouter } from 'next/navigation';
 import ProfileHeader from '@/components/dashboard/profile/ProfileHeader';
 import AcademicProfile from '@/components/dashboard/profile/AcademicProfile';
 import AcademicCredentials from '@/components/dashboard/profile/AcademicCredentials';
@@ -11,56 +10,59 @@ import ResearchInterests from '@/components/dashboard/profile/ResearchInterests'
 import ProfessionalExperience from '@/components/dashboard/profile/ProfessionalExperience';
 import SkillsAchievements from '@/components/dashboard/profile/SkillsAchievements';
 import ConnectSection from '@/components/dashboard/profile/ConnectSection';
-import { Edit2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <DashboardSidebar />
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Navigation */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors"
+        >
+          <ArrowLeft size={20} />
+          <span className="font-medium">Back to Dashboard</span>
+        </button>
+      </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <DashboardHeader />
+      {/* Scrollable Content */}
+      <div className="overflow-y-auto">
+        <div className="max-w-6xl mx-auto px-6 py-8">
+          {/* Profile Header */}
+          <ProfileHeader isEditing={isEditing} setIsEditing={setIsEditing} />
 
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="max-w-6xl mx-auto px-6 py-8">
-            {/* Profile Header */}
-            <ProfileHeader isEditing={isEditing} setIsEditing={setIsEditing} />
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+            {/* Left Column */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Academic Credentials */}
+              <AcademicCredentials isEditing={isEditing} />
 
-            {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-              {/* Left Column */}
-              <div className="lg:col-span-2 space-y-6">
-                {/* Academic Credentials */}
-                <AcademicCredentials isEditing={isEditing} />
+              {/* Test Scores */}
+              <TestScores isEditing={isEditing} />
 
-                {/* Test Scores */}
-                <TestScores isEditing={isEditing} />
+              {/* Research & Academic Interests */}
+              <ResearchInterests isEditing={isEditing} />
 
-                {/* Research & Academic Interests */}
-                <ResearchInterests isEditing={isEditing} />
+              {/* Professional Experience */}
+              <ProfessionalExperience isEditing={isEditing} />
 
-                {/* Professional Experience */}
-                <ProfessionalExperience isEditing={isEditing} />
+              {/* Skills & Achievements */}
+              <SkillsAchievements isEditing={isEditing} />
+            </div>
 
-                {/* Skills & Achievements */}
-                <SkillsAchievements isEditing={isEditing} />
-              </div>
+            {/* Right Column */}
+            <div>
+              {/* Academic Profile */}
+              <AcademicProfile />
 
-              {/* Right Column */}
-              <div>
-                {/* Academic Profile */}
-                <AcademicProfile />
-
-                {/* Connect Section */}
-                <div className="mt-6">
-                  <ConnectSection isEditing={isEditing} />
-                </div>
+              {/* Connect Section */}
+              <div className="mt-6">
+                <ConnectSection isEditing={isEditing} />
               </div>
             </div>
           </div>
