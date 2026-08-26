@@ -14,6 +14,7 @@ export interface User {
   email: string;
   fullName?: string;
   token?: string;
+  role?: string; // Added role property
 }
 
 export interface AuthContextType {
@@ -22,12 +23,14 @@ export interface AuthContextType {
   error: string | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
+  adminLogin: (email: string, password: string) => Promise<void>;
   register: (
     fullName: string,
     email: string,
     password: string,
   ) => Promise<void>;
   logout: () => void;
+  adminLogout: () => void;
   clearError: () => void;
 }
 
@@ -66,12 +69,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const response = await AuthService.login(email, password);
 
+      //wait a bit 
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const data= await AuthService.getCurrentUser(response.access_token);
       // Handle response structure from backend
       const userData: User = {
-        id: response.id || response.user_id,
-        email: response.email || email,
-        fullName: response.full_name || response.fullName,
-        token: response.token || response.access_token,
+        id: data.id || data.user_id,
+        email: data.email || email,
+        fullName: data.name || data.fullName,
+        token: data.token || data.access_token,
+        role: data.role || "user", // Assuming the backend returns a role field
       };
 
       setUser(userData);
@@ -89,6 +97,59 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setLoading(false);
     }
+  }, []);
+
+
+  const adminLogin = useCallback(async (email: string, password: string) => {
+    setLoading(true);
+    setError(null); 
+
+    try{
+      const response = await AuthService.login(email, password);
+      //wait a bit 
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const data= await AuthService.getCurrentUser(response.access_token);
+      // Handle response structure from backend
+      const userData: User = {
+        id: data.id || data.user_id,
+        email: data.email || email,
+        fullName: data.name || data.fullName,
+        token: response.access_token || data.token,
+        role: data.role || "user", // Assuming the backend returns a role field
+      };
+
+      if(data.role !== "admin") {
+        throw new Error("Only admin users can access this dashboard.");
+      }
+
+
+
+      setUser(userData);
+      setIsAuthenticated(true);
+
+      // Persist to localStorage
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("admin_token", userData.token || "");
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.detail || err.message || "Login failed";
+      setError(errorMessage);
+      setIsAuthenticated(false);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+
+
+    }
+  , []);
+
+  const adminLogout = useCallback(() => {
+    setUser(null);
+    setIsAuthenticated(false);
+    setError(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("admin_token");
   }, []);
 
   const register = useCallback(
@@ -147,6 +208,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     register,
     logout,
     clearError,
+    adminLogin,
+    adminLogout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

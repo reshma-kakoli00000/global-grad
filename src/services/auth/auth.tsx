@@ -31,4 +31,21 @@ export class AuthService {
       throw error;
     }
   }
+
+  static async getCurrentUser(token: string) {
+    try {
+      const response = await axios.get(`${baseURL}users/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true', 
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Failed to get current user:", error);
+      throw error;
+    }
+  }
+
+  
 }
