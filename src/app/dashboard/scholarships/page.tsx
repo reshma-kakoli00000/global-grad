@@ -17,7 +17,7 @@ export default function ScholarshipsPage() {
       <div className="flex-1 flex flex-col overflow-hidden">
         
         {/* Existing Header */}
-        <DashboardHeader userName="Alex" />
+        <DashboardHeader />
 
         {/* Scroll Area */}
         <div className="flex-1 overflow-y-auto">

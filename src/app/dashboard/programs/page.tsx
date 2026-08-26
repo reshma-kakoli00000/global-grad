@@ -23,7 +23,7 @@ export default function ProgramsPage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <DashboardHeader userName="Alex" />
+        <DashboardHeader />
 
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto">

@@ -2,15 +2,20 @@
 
 import React, { useState } from 'react';
 import { Bell, User, Search } from 'lucide-react';
+import { useAuth } from '@/providers/authContext';
 
 interface DashboardHeaderProps {
   userName?: string;
 }
 
-export default function DashboardHeader({ userName = 'Alex' }: DashboardHeaderProps) {
+export default function DashboardHeader({ userName }: DashboardHeaderProps) {
+  const { user, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  
+  const displayName = userName || user?.fullName || 'Guest';
+  const displayEmail = user?.email || 'user@example.com';
 
   const notifications = [
     { id: 1, title: 'Application Submitted', description: 'Your Stanford application has been submitted' },
@@ -23,7 +28,7 @@ export default function DashboardHeader({ userName = 'Alex' }: DashboardHeaderPr
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1">
           <h2 className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>
-            Welcome back, {userName}.
+            Welcome back, {displayName}.
           </h2>
           <p className="text-gray-600 text-sm mt-1">
             You have 3 application deadlines approaching this week.
@@ -94,34 +99,37 @@ export default function DashboardHeader({ userName = 'Alex' }: DashboardHeaderPr
             {showProfile && (
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                 <div className="p-4 border-b border-gray-200">
-                  <p className="font-semibold text-gray-800">{userName}</p>
-                  <p className="text-xs text-gray-600">user@example.com</p>
+                  <p className="font-semibold text-gray-800">{displayName}</p>
+                  <p className="text-xs text-gray-600">{displayEmail}</p>
                 </div>
                 <a
-                  href="#profile"
+                  href="/dashboard/profile"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   My Profile
                 </a>
                 <a
-                  href="#settings"
+                  href="/dashboard/settings"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   Settings
                 </a>
                 <a
-                  href="#documents"
+                  href="/dashboard/documents"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   My Documents
                 </a>
                 <div className="border-t border-gray-200" />
-                <a
-                  href="/login"
-                  className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                <button
+                  onClick={() => {
+                    logout();
+                    window.location.href = "/login";
+                  }}
+                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
                 >
                   Logout
-                </a>
+                </button>
               </div>
             )}
           </div>
