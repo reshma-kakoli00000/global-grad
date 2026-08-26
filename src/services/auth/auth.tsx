@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const baseURL = "http://localhost:8000/"; // Replace with your backend URL
-const baseURL = "https://literally-many-lacewing.ngrok-free.app/"; //ngrok url for testing
+const baseURL = "http://localhost:8000/"; // Replace with your backend URL
+// const baseURL = "https://literally-many-lacewing.ngrok-free.app/"; //ngrok url for testing
 
 export class AuthService {
   static async login(email: string, password: string) {
@@ -37,7 +37,7 @@ export class AuthService {
       const response = await axios.get(`${baseURL}users/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'ngrok-skip-browser-warning': 'true', 
+          "ngrok-skip-browser-warning": "true",
         },
       });
       return response.data;
@@ -46,6 +46,4 @@ export class AuthService {
       throw error;
     }
   }
-
-  
 }
